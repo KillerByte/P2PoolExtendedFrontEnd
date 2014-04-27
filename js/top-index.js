@@ -71,7 +71,7 @@ function UpdateData() {
 
     var local = d3.sum(values(local_stats.miner_hash_rates));
     var local_dead = d3.sum(values(local_stats.miner_dead_hash_rates));
-    d3.select('#local_rate').text(d3.format('.3s')(local) + 'H/s');
+    d3.select('#local_rate').text(d3.format('.3s')(local) + 'H/m');
     d3.select('#local_doa').text(d3.format('.2p')(local_dead/local));
 
     d3.select('#shares_total').text(local_stats.shares.total);
@@ -92,13 +92,13 @@ function UpdateData() {
     d3.select('#time_to_share_minute').text(d3.format('.3r')(time_to_share / 60) + " ");
 
     d3.json('../global_stats', function(global_stats) {
-      d3.select('#pool_rate').text(d3.format('.3s')(global_stats.pool_hash_rate) + 'H/s');
+      d3.select('#pool_rate').text(d3.format('.3s')(global_stats.pool_hash_rate) + 'H/m');
       d3.select('#pool_stale').text(d3.format('.2p')(global_stats.pool_stale_prop));
       d3.select('#difficulty').text(d3.format('.3r')(global_stats.min_difficulty));
       d3.select('#minerdiff').text(d3.format('.3r')(global_stats.min_difficulty * 65536));
 
-      var time_to_block = local_stats.attempts_to_block/global_stats.pool_hash_rate;
-      d3.select('#time_to_block').text(d3.format('.3r')(time_to_block/3600) + " hours");
+      var time_to_block = (local_stats.attempts_to_block/global_stats.pool_hash_rate);
+      d3.select('#time_to_block').text(d3.format('.3r')(time_to_block/60) + " hours");
 
       d3.select('#expected_payout_amount').text(d3.format('.3r')(local/global_stats.pool_hash_rate*local_stats.block_value*(1-local_stats.donation_proportion)));
 
@@ -149,16 +149,16 @@ function UpdateData() {
     $("#miners").html('<tr><th>Miner</th><th style="width:175px;">Hashrate</th><th style="width:175px;">Dead hashrate</th><th style="width:175px;">% dead</th></tr>');
     var tr = d3.select("#miners").selectAll().data(miners).enter().append('tr');
     tr.append('td').text(function(miner){return miner.miner_name});
-    tr.append('td').text(function(miner){return d3.format('.3s')(miner.hash) +'H/s'});
-    tr.append('td').text(function(miner){return local_stats.miner_dead_hash_rates[miner.miner_name] != null ? d3.format('.3s')(local_stats.miner_dead_hash_rates[miner.miner_name]) + 'H/s' : '0H/s'});
+    tr.append('td').text(function(miner){return d3.format('.3s')(miner.hash) +'H/m'});
+    tr.append('td').text(function(miner){return local_stats.miner_dead_hash_rates[miner.miner_name] != null ? d3.format('.3s')(local_stats.miner_dead_hash_rates[miner.miner_name]) + 'H/m' : '0H/m'});
     tr.append('td').text(function(miner){return local_stats.miner_dead_hash_rates[miner.miner_name] != null ? d3.format('.3s')(local_stats.miner_dead_hash_rates[miner.miner_name] / miner.hash * 100) + '%' : '0%'});
 
-    document.title=d3.format('.3s')(local) + 'H/s (' + d3.format('.2p')(local_dead/local) + ') | ' + local_stats.shares.total + ' shares | ' + siteTitle + ' (' + coinSymbol + ')';
+    document.title=d3.format('.3s')(local) + 'H/m (' + d3.format('.2p')(local_dead/local) + ') | ' + local_stats.shares.total + ' shares | ' + siteTitle + ' (' + coinSymbol + ')';
   });
 
 
   /// Pool speed graph
-  plot_later(d3.select("#main-local"), "H/s", "H", [
+  plot_later(d3.select("#main-local"), "H/m", "H", [
     {"url": "../web/graph_data/local_hash_rate/last_" + period, "color": "#00f", "label": "Total"},
     {"url": "../web/graph_data/local_dead_hash_rate/last_" + period, "color": "#f00", "label": "Dead"}
   ],1000,300);

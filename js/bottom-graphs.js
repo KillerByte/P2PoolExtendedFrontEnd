@@ -304,18 +304,18 @@ function data_to_lines(data, sort_key) {
 function change_period(period, currency_info) {
   d3.select("#period_current").text(period);
   var lowerperiod = period.toLowerCase();
-  plot_later(d3.select("#local"), "H/s", "H", [
+  plot_later(d3.select("#local"), "H/m", "H", [
     {"url": "../web/graph_data/local_hash_rate/last_" + lowerperiod, "color": "#00f", "label": "Total"},
     {"url": "../web/graph_data/local_dead_hash_rate/last_" + lowerperiod, "color": "#f00", "label": "Dead"}
   ]);
   d3.json("../web/graph_data/local_share_hash_rates/last_" + lowerperiod, function(data) {
-    plot(d3.select('#local_shares'), 'H/s', 'H', data_to_lines(data), true);
+    plot(d3.select('#local_shares'), 'H/m', 'H', data_to_lines(data), true);
   });
   /// plot_later(d3.select("#payout"), currency_info.symbol, null, [
   ///   {"url": "../web/graph_data/current_payout/last_" + lowerperiod, "color": "#00f"}
   /// ]);
   d3.json("../web/graph_data/pool_rates/last_" + lowerperiod, function(data) {
-    plot(d3.select('#pool'), 'H/s', 'H', data_to_lines(data), true);
+    plot(d3.select('#pool'), 'H/m', 'H', data_to_lines(data), true);
   });
   d3.json("../web/graph_data/peers/last_" + lowerperiod, function(data) {
     plot(d3.select('#peers'), '', null, data_to_lines(data, function(line){ return line.label == "incoming" }), true);
@@ -331,7 +331,7 @@ function change_period(period, currency_info) {
         var div = d3.select("#miners").selectAll().data(userlist).enter().append("div");
         div.append("h3").text(function(u) { return u });
         div.append("svg:svg").each(function(u) {
-          plot(d3.select(this), "H/s", "H", [
+          plot(d3.select(this), "H/m", "H", [
             {"data": data.map(function(d){ return [d[0], u in d[1] ? d[1][u] : d[3], d[2]] }), "color": "#00f", "label": "Total"},
             {"data": dead_data.map(function(d){ return [d[0], u in d[1] ? d[1][u] : d[3], d[2]] }), "color": "#f00", "label": "Dead"}
           ]);
@@ -346,7 +346,7 @@ function change_period(period, currency_info) {
   });
 
   d3.json("../web/graph_data/desired_version_rates/last_" + lowerperiod, function(data) {
-    plot(d3.select('#desired_version_rates'), 'H/s', 'H', data_to_lines(data, function(line){ return parseInt(line.label) }), true);
+    plot(d3.select('#desired_version_rates'), 'H/m', 'H', data_to_lines(data, function(line){ return parseInt(line.label) }), true);
   });
 
   d3.json("../web/graph_data/traffic_rate/last_" + lowerperiod, function(data) {
